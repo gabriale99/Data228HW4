@@ -1,0 +1,37 @@
+cd /home/ec2-user/environment/MultiRegion-Serverless-Workshop/2_UI/cfn
+
+aws cloudformation deploy \
+--region eu-west-1 \
+--template-file web-ui-stack.yaml \
+--stack-name ticket-service-ui \
+--capabilities CAPABILITY_IAM
+
+
+aws cloudformation deploy \
+--region eu-west-1 \
+--template-file webs3bucket_with_cloudfront.yaml \
+--stack-name ticket-service-ui-cloudfront \
+--parameter-overrides S3BucketName=[bucket-name]
+
+
+aws s3 sync --delete dist/ s3://[bucket_name]
+
+
+aws s3api put-bucket-versioning \
+--bucket <source bucket name. ex) ticket-service-ui-websitebucket-firstname-lastname> \
+--versioning-configuration Status=Enabled
+
+
+aws s3api create-bucket \
+--bucket <destination bucket name. ex) ticket-service-ui-websitebucket-singapore-firstname-lastname> \
+--region ap-southeast-1 \
+--create-bucket-configuration LocationConstraint=ap-southeast-1
+
+aws s3api put-bucket-versioning \
+--bucket <destination bucket name. ex) ticket-service-ui-websitebucket-singapore-firstname-lastname> \
+--versioning-configuration Status=Enabled 
+
+
+aws s3api put-bucket-replication \
+--replication-configuration file://replication.json \
+--bucket <source bucket name>
