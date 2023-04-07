@@ -1,0 +1,12 @@
+{  
+  "Role":"arn:aws:iam::452403189079:role/crrRole",
+  "Rules":[
+        {
+          "Prefix":"",
+          "Status": "Enabled",
+          "Destination": {
+            "Bucket": "arn:aws:s3:::ticket-service-ui-websitebucket-ap-southeast-replica"
+          }
+        }
+      ]
+  }
